@@ -1,36 +1,47 @@
-import * as dotenv from "dotenv";
-import { createError } from "../error.js";
-import { Configuration, OpenAIApi } from "openai";
+// const axios = require("axios");
+import axios from "axios";
+// const FormData = require("form-data");
+import FormData from 'form-data';
+// const fs = require("fs");
 
-dotenv.config();
 
-// Setup open ai api key
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_IMAGE_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
-// Controller to generate Image
 
 export const generateImage = async (req, res, next) => {
-  try {
-    console.log("req",req.body)
-    const { prompt } = req.body;
+  // console.log(req)
+  const { prompt } = req.body;
+  console.log("prompt",prompt)
 
-    const response = await openai.createImage({
-      prompt,
-      n: 1,
-      size: "1024x1024",
-      response_format: "b64_json",
+  const form = new FormData();
+  form.append("prompt", "a white siamese cat");
+  form.append("model", "stable-diffusion-v1-5");
+  form.append("mode", "text-to-image");
+  form.append("cfg_scale", "7");
+  form.append("samples", "1");
+  form.append("steps", "30");
+  form.append("width", "512");
+  form.append("height", "512");
+
+  axios
+    .post("https://api.stability.ai/v2beta/stable-image/generate/core", form, {
+      headers: {
+        ...form.getHeaders(),
+        Authorization: `Bearer sk-Oh9f0mHOrjPymzvKmMHI5uSg2fVtrW1bIyxCSgUj2yabe1kV`,
+        Accept: "image/*",
+      },
+      responseType: "arraybuffer", // To handle binary image
+    })
+    .then((response) => {
+      console.log("response",response)
+      const generatedImage = Buffer.from(response.data).toString('base64');
+      // // fs.writeFileSync("siamese_cat.png", response.data);
+      // // const generatedImage = response.data[0].b64_json;
+      console.log("generatedImage",generatedImage)
+      return res.status(200).json({ photo: generatedImage });  
+      console.log("✅ Image saved as siamese_cat.png");
+    })
+    .catch((err) => {
+      console.error('❌ Error:', Buffer.from(err.response.data).toString('utf-8'));
+
+      console.error("❌ Error:", err.response?.data || err.message);
     });
-    const generatedImage = response.data.data[0].b64_json;
-    return res.status(200).json({ photo: generatedImage });
-  } catch (error) {
-    next(
-      createError(
-        error.status,
-        error?.response?.data?.error?.message || error?.message
-      )
-    );
-  }
 };
