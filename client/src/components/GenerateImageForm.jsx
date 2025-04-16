@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "./button";
 import TextInput from "./TextInput";
-import { AutoAwesome, CreateRounded } from "@mui/icons-material";
+import { AlternateEmail, AutoAwesome, CreateRounded } from "@mui/icons-material";
 import { CreatePost, GenerateAIImage } from "../api";
 
 const Form = styled.div`
@@ -54,8 +54,8 @@ const GenerateImageForm = ({
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const generateImageFun = async () => {
-    console.log("57")
-    console.log("post123",post)
+    // console.log("57")
+    // console.log("post123",post)
     setGenerateImageLoading(true);
     await GenerateAIImage({ prompt: post.prompt })
       .then((res) => {
@@ -66,7 +66,9 @@ const GenerateImageForm = ({
         setGenerateImageLoading(false);
       })
       .catch((error) => {
-        setError(error?.response?.data?.message);
+        // console.log("first error",error)
+        setError(error?.message);
+        alert(error?.code == "ERR_BAD_REQUEST"?"Bad Request, this could be due to lack of sufficient credits to generate images. Try again later.":error?.message);
         setGenerateImageLoading(false);
       });
   };

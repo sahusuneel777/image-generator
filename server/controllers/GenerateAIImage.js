@@ -25,23 +25,41 @@ export const generateImage = async (req, res, next) => {
     .post("https://api.stability.ai/v2beta/stable-image/generate/core", form, {
       headers: {
         ...form.getHeaders(),
-        Authorization: `Bearer sk-Oh9f0mHOrjPymzvKmMHI5uSg2fVtrW1bIyxCSgUj2yabe1kV`,
+        Authorization: `Bearer sk-lUisMJRvVmRBdc8hSqUbVDmGC9rAYxUBewbCiM5x9dS6wPNu`,
         Accept: "image/*",
       },
       responseType: "arraybuffer", // To handle binary image
     })
     .then((response) => {
-      console.log("response",response)
+      // console.log("response",response)
       const generatedImage = Buffer.from(response.data).toString('base64');
       // // fs.writeFileSync("siamese_cat.png", response.data);
       // // const generatedImage = response.data[0].b64_json;
-      console.log("generatedImage",generatedImage)
+      // console.log("generatedImage",generatedImage)
       return res.status(200).json({ photo: generatedImage });  
       console.log("✅ Image saved as siamese_cat.png");
     })
     .catch((err) => {
+      const errorData = Buffer.from(err.response?.data || '').toString('utf-8');
+
+    let errorMsg = 'Something went wrong!';
+    try {
+      const json = JSON.parse(errorData);
+      if (json.errors && Array.isArray(json.errors)) {
+        errorMsg = json.errors.join(' ');
+      }
+    } catch (e) {
+      // leave errorMsg as default
+    }
+    console.log("errorData",errorMsg)
+
+    // Send error message as JSON to client
+    return res.status(400).json({
+      success: false,
+      message: errorMsg
+    });
       console.error('❌ Error:', Buffer.from(err.response.data).toString('utf-8'));
 
-      console.error("❌ Error:", err.response?.data || err.message);
+      // console.error("❌ Error:", err.response?.data || err.message);
     });
 };
