@@ -3,7 +3,8 @@ import axios from "axios";
 // const FormData = require("form-data");
 import FormData from 'form-data';
 // const fs = require("fs");
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 export const generateImage = async (req, res, next) => {
@@ -25,7 +26,7 @@ export const generateImage = async (req, res, next) => {
     .post("https://api.stability.ai/v2beta/stable-image/generate/core", form, {
       headers: {
         ...form.getHeaders(),
-        Authorization: `Bearer sk-lUisMJRvVmRBdc8hSqUbVDmGC9rAYxUBewbCiM5x9dS6wPNu`,
+        Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
         Accept: "image/*",
       },
       responseType: "arraybuffer", // To handle binary image
