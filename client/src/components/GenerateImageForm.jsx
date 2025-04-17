@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "./button";
 import TextInput from "./TextInput";
-import { AlternateEmail, AutoAwesome, CreateRounded } from "@mui/icons-material";
+import { AutoAwesome, CreateRounded } from "@mui/icons-material";
 import { CreatePost, GenerateAIImage } from "../api";
 
 const Form = styled.div`
@@ -118,7 +118,7 @@ const GenerateImageForm = ({
           flex
           leftIcon={<AutoAwesome />}
           isLoading={generateImageLoading}
-          isDisabled={post.prompt === ""}
+          isDisabled={post.prompt == ""}
           onClick={() => generateImageFun()}
         />
         <Button
