@@ -28,3 +28,8 @@ Content creation for blogs, social media, and marketing
 
 Concept art for games, films, or animation
 
+![Screenshot (45)](https://github.com/user-attachments/assets/9d306fbd-fd9a-4e2d-bc40-eb415375bb57)
+
+
+![Screenshot (44)](https://github.com/user-attachments/assets/6c31e0e3-9142-4d66-a808-f000144fe7e3)
+
